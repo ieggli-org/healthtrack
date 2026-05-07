@@ -27,7 +27,10 @@ export function UserMenu({ user }: UserMenuProps) {
   }
 
   const avatarUrl = user.user_metadata?.avatar_url as string | undefined
-  const displayName = (user.user_metadata?.full_name as string | undefined) ?? user.email ?? 'User'
+  const displayName =
+    (user.user_metadata?.full_name as string | undefined) ??
+    user.email?.split('@')[0] ??
+    'Account'
   const initials = displayName.slice(0, 2).toUpperCase()
 
   return (
