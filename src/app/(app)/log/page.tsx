@@ -1,3 +1,5 @@
+import { LogPageClient } from '@/components/entries/LogPageClient'
+
 export default function LogPage() {
-  return <div className="text-body">Log — coming soon</div>
+  return <LogPageClient />
 }
