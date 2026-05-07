@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { subDays, subMonths, subYears, format } from 'date-fns'
 import { useStats } from '@/hooks/useStats'
+import { useEntries } from '@/hooks/useEntries'
 import { useGoal } from '@/hooks/useGoals'
 import { useUnits } from '@/store/units'
 import { displayWeight } from '@/lib/utils'
@@ -65,6 +66,7 @@ export function DashboardPageClient() {
 
   const { data: stats, isLoading } = useStats(dateRange.from, dateRange.to)
   const { data: goalData, isLoading: goalsIsLoading } = useGoal()
+  const { data: anyEntriesData, isLoading: entriesCheckLoading } = useEntries({ limit: 1 })
   const { unit } = useUnits()
 
   const goalWeightKg = (goalData?.goal as { goal_weight_kg?: number } | null)?.goal_weight_kg
@@ -76,10 +78,15 @@ export function DashboardPageClient() {
   }
 
   const hasGoal = !!(goalData?.goal)
+  const hasAnyEntries = ((anyEntriesData as { entries?: unknown[] } | undefined)?.entries?.length ?? 0) > 0
 
-  if (!isLoading && !goalsIsLoading && (!stats || (stats.series as unknown[]).length === 0)) {
+  // Only show the full empty state when the user has never logged anything
+  if (!isLoading && !goalsIsLoading && !entriesCheckLoading && !hasAnyEntries) {
     return <EmptyDashboard hasGoal={hasGoal} />
   }
+
+  // No data in the selected range (but data exists overall)
+  const noDataInRange = !isLoading && stats && (stats.series as unknown[]).length === 0
 
   return (
     <div className="space-y-6">
@@ -107,8 +114,10 @@ export function DashboardPageClient() {
       <div className="bg-surface border border-border rounded-2xl p-4">
         <h3 className="text-sm font-medium text-heading mb-4">Weight Over Time</h3>
         {isLoading ? (
+          <div className="h-64 flex items-center justify-center text-muted text-sm">Loading…</div>
+        ) : noDataInRange ? (
           <div className="h-64 flex items-center justify-center text-muted text-sm">
-            Loading…
+            No entries in this period — try a wider range.
           </div>
         ) : stats ? (
           <WeightChart stats={stats} goalWeight={goalWeight} />
