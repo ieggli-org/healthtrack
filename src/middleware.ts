@@ -29,10 +29,10 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Protected routes: redirect to /login if not authenticated
-  const isAppRoute = request.nextUrl.pathname.startsWith('/dashboard') ||
-    request.nextUrl.pathname.startsWith('/log') ||
-    request.nextUrl.pathname.startsWith('/goals') ||
-    request.nextUrl.pathname.startsWith('/settings')
+  const appPrefixes = ['/dashboard', '/log', '/goals', '/settings']
+  const isAppRoute = appPrefixes.some(p =>
+    request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(p + '/')
+  )
 
   if (isAppRoute && !user) {
     const url = request.nextUrl.clone()
