@@ -1,3 +1,5 @@
+import { GoalsPageClient } from '@/components/goals/GoalsPageClient'
+
 export default function GoalsPage() {
-  return <div className="text-body">Goals — coming soon</div>
+  return <GoalsPageClient />
 }
