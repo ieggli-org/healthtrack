@@ -18,7 +18,7 @@ const config: Config = {
         'primary-fg': 'var(--primary-fg)',
         success: 'var(--success)',
         warning: 'var(--warning)',
-        muted: 'var(--muted)',
+        muted: 'var(--muted-text)',
         body: 'var(--body)',
         heading: 'var(--heading)',
       },

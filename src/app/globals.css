@@ -3,17 +3,39 @@
 @tailwind utilities;
 
 :root {
+  /* Design system tokens */
   --bg: #0A0A0B;
   --surface: #111113;
   --surface-2: #18181B;
-  --border: #27272A;
   --primary: #6366F1;
   --primary-fg: #FFFFFF;
   --success: #10B981;
   --warning: #F59E0B;
-  --muted: #71717A;
+  --muted-text: #71717A;
   --body: #A1A1AA;
   --heading: #FAFAFA;
+
+  /* shadcn/ui semantic tokens — mapped to our design system */
+  --background: 0 0% 4%;           /* ~#0A0A0B */
+  --foreground: 0 0% 98%;          /* ~#FAFAFA heading */
+  --card: 240 3% 7%;               /* ~#111113 surface */
+  --card-foreground: 0 0% 98%;
+  --popover: 240 3% 7%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 239 84% 67%;          /* #6366F1 */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 4% 10%;         /* ~#18181B surface-2 */
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 4% 10%;
+  --muted-foreground: 240 4% 46%;  /* ~#71717A */
+  --accent: 240 4% 10%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 4% 16%;            /* ~#27272A */
+  --input: 240 4% 16%;
+  --ring: 239 84% 67%;             /* primary */
+  --radius: 0.5rem;
 }
 
 * {
