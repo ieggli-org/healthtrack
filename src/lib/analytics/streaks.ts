@@ -19,7 +19,7 @@ export function computeStreaks(entries: EntryDate[]): StreakResult {
   if (entries.length === 0) return { current: 0, longest: 0 }
 
   // Deduplicate and sort unique dates ascending
-  const dates = [...new Set(entries.map(e => e.date.slice(0, 10)))].sort()
+  const dates = Array.from(new Set(entries.map(e => e.date.slice(0, 10)))).sort()
 
   // Longest streak
   let longest = 1
@@ -36,13 +36,19 @@ export function computeStreaks(entries: EntryDate[]): StreakResult {
 
   // Current streak: count back from today
   const today = format(new Date(), 'yyyy-MM-dd')
+  const yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd')
+
   let current = 0
-  for (let i = dates.length - 1; i >= 0; i--) {
-    const expected = format(subDays(new Date(), dates.length - 1 - i), 'yyyy-MM-dd')
-    if (dates[i] === expected) {
-      current++
-    } else {
-      break
+  const lastDate = dates[dates.length - 1]
+  if (lastDate === today || lastDate === yesterday) {
+    let expected = lastDate
+    for (let i = dates.length - 1; i >= 0; i--) {
+      if (dates[i] === expected) {
+        current++
+        expected = format(subDays(parseISO(expected), 1), 'yyyy-MM-dd')
+      } else {
+        break
+      }
     }
   }
 

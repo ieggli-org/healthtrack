@@ -8,7 +8,7 @@ describe('computeStreaks', () => {
 
   it('returns 1/1 for single entry', () => {
     const result = computeStreaks([{ date: '2024-01-01' }])
-    expect(result.longest).toBeGreaterThanOrEqual(0)
+    expect(result.longest).toBe(1)
   })
 
   it('correctly counts longest streak', () => {
@@ -31,6 +31,22 @@ describe('computeStreaks', () => {
     ]
     const result = computeStreaks(entries)
     expect(result.longest).toBe(2)
+  })
+
+  it('current streak is active when last entry was yesterday', () => {
+    const { format, subDays } = require('date-fns')
+    const yesterday = format(subDays(new Date(), 1), 'yyyy-MM-dd')
+    const dayBefore = format(subDays(new Date(), 2), 'yyyy-MM-dd')
+    const result = computeStreaks([{ date: dayBefore }, { date: yesterday }])
+    expect(result.current).toBe(2)
+  })
+
+  it('current streak is 0 when last entry was 2 days ago', () => {
+    const { format, subDays } = require('date-fns')
+    const twoDaysAgo = format(subDays(new Date(), 2), 'yyyy-MM-dd')
+    const threeDaysAgo = format(subDays(new Date(), 3), 'yyyy-MM-dd')
+    const result = computeStreaks([{ date: threeDaysAgo }, { date: twoDaysAgo }])
+    expect(result.current).toBe(0)
   })
 })
 

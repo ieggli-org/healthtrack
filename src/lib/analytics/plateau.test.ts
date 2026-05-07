@@ -40,7 +40,7 @@ describe('detectPlateau', () => {
     expect(detectPlateau(combined).isPlateauing).toBe(true)
   })
 
-  it('returns empty array for empty input', () => {
+  it('returns isPlateauing: false for empty input', () => {
     expect(detectPlateau([]).isPlateauing).toBe(false)
   })
 })
