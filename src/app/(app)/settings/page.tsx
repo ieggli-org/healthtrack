@@ -1,3 +1,5 @@
+import { SettingsPageClient } from '@/components/settings/SettingsPageClient'
+
 export default function SettingsPage() {
-  return <div className="text-body">Settings — coming soon</div>
+  return <SettingsPageClient />
 }
