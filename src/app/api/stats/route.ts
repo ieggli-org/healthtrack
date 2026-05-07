@@ -37,6 +37,11 @@ export async function GET(request: Request) {
       .maybeSingle(),
   ])
 
+  if (entriesResult.error) {
+    console.error('entries query error:', entriesResult.error)
+    return NextResponse.json({ error: 'Failed to fetch entries' }, { status: 500 })
+  }
+
   const entries = entriesResult.data ?? []
   const goal = goalResult.data ?? null
   const heightCm = profileResult.data?.height_cm ?? null

@@ -27,15 +27,7 @@ import {
 import { useCreateEntry, useUpdateEntry } from '@/hooks/useEntries'
 import { useUnits } from '@/store/units'
 import { lbToKg, kgToLb } from '@/lib/utils'
-
-interface Entry {
-  id: string
-  weight_kg: number
-  logged_at: string
-  note?: string | null
-  body_fat_pct?: number | null
-  waist_cm?: number | null
-}
+import type { Entry } from '@/types/app'
 
 interface EntryFormProps {
   open: boolean
@@ -159,7 +151,7 @@ export function EntryForm({ open, onClose, entry }: EntryFormProps) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-w-full sm:max-w-lg mx-4 sm:mx-auto">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Edit Entry' : 'Add Entry'}</DialogTitle>
         </DialogHeader>

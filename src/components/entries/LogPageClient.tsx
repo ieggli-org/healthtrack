@@ -7,22 +7,14 @@ import { useEntries } from '@/hooks/useEntries'
 import { EntryTable } from './EntryTable'
 import { EntryForm } from './EntryForm'
 import { CsvImport } from './CsvImport'
-
-interface Entry {
-  id: string
-  weight_kg: number
-  logged_at: string
-  note?: string | null
-  body_fat_pct?: number | null
-  waist_cm?: number | null
-}
+import type { Entry } from '@/types/app'
 
 export function LogPageClient() {
   const { data, isLoading, isError } = useEntries()
   const [formOpen, setFormOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null)
 
-  const entries: Entry[] = (data?.entries as Entry[]) ?? []
+  const entries: Entry[] = data?.entries ?? []
 
   const handleAddClick = () => {
     setEditingEntry(null)
@@ -64,6 +56,11 @@ export function LogPageClient() {
       ) : isError ? (
         <div className="py-12 text-center text-destructive">
           Failed to load entries. Please refresh the page.
+        </div>
+      ) : entries.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-4 text-center bg-surface border border-border rounded-2xl">
+          <p className="text-muted text-sm">No entries yet. Start tracking your weight today.</p>
+          <Button onClick={handleAddClick}>Add your first entry</Button>
         </div>
       ) : (
         <EntryTable entries={entries} onEdit={handleEdit} />

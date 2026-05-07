@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import type { Entry } from '@/types/app'
 
 interface EntryParams {
   from?: string
@@ -15,7 +16,7 @@ async function fetchEntries(params: EntryParams = {}) {
   if (params.limit) search.set('limit', String(params.limit))
   const res = await fetch(`/api/entries?${search}`)
   if (!res.ok) throw new Error('Failed to fetch entries')
-  return res.json() as Promise<{ entries: unknown[] }>
+  return res.json() as Promise<{ entries: Entry[] }>
 }
 
 export function useEntries(params: EntryParams = {}) {

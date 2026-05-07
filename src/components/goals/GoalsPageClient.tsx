@@ -45,6 +45,12 @@ export function GoalsPageClient() {
         <p className="text-sm text-muted mt-1">Set your target weight and see your projection.</p>
       </div>
 
+      {!goal && (
+        <div className="bg-surface border border-border rounded-2xl p-6 text-center">
+          <p className="text-muted text-sm">No goal set yet. Define a target weight to see your projection.</p>
+        </div>
+      )}
+
       <div className="bg-surface border border-border rounded-2xl p-6">
         <h3 className="text-sm font-medium text-heading mb-4">
           {goal ? 'Update your goal' : 'Set a goal'}
@@ -58,7 +64,7 @@ export function GoalsPageClient() {
         />
       </div>
 
-      {goal && stats && (stats.ma7 as unknown[]).length >= 3 && (
+      {goal && stats && (stats.ma7 as Array<{ date: string; value: number }>).length >= 3 && (
         <div className="bg-surface border border-border rounded-2xl p-6">
           <h3 className="text-sm font-medium text-heading mb-4">Projection</h3>
           <ProjectionView stats={stats} goal={goal} />

@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import Papa from 'papaparse'
 import { Download, Loader2 } from 'lucide-react'
+import type { User } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -13,9 +14,14 @@ import { useEntries } from '@/hooks/useEntries'
 import { useUnits } from '@/store/units'
 import { createBrowserClient } from '@/lib/supabase/client'
 
+interface ProfileShape {
+  height_cm?: number | null
+  preferred_unit?: 'kg' | 'lb' | null
+}
+
 export function SettingsPageClient() {
-  const supabase = createBrowserClient()
-  const [user, setUser] = useState<any>(null)
+  const supabase = useMemo(() => createBrowserClient(), [])
+  const [user, setUser] = useState<User | null>(null)
   const { data: profileData } = useProfile()
   const { data: entriesData } = useEntries({ limit: 500 })
   const updateProfile = useUpdateProfile()
@@ -27,8 +33,9 @@ export function SettingsPageClient() {
   }, [supabase])
 
   useEffect(() => {
-    if ((profileData?.profile as any)?.height_cm) {
-      setHeight(String((profileData?.profile as any).height_cm))
+    const profile = profileData?.profile as ProfileShape | null | undefined
+    if (profile?.height_cm) {
+      setHeight(String(profile.height_cm))
     }
   }, [profileData])
 
@@ -38,14 +45,22 @@ export function SettingsPageClient() {
       toast.error('Height must be between 50 and 300 cm')
       return
     }
-    await updateProfile.mutateAsync({ height_cm: heightNum })
-    toast.success('Height saved')
+    try {
+      await updateProfile.mutateAsync({ height_cm: heightNum })
+      toast.success('Height saved')
+    } catch {
+      toast.error('Failed to save height')
+    }
   }
 
   const saveUnit = async (newUnit: 'kg' | 'lb') => {
     setUnit(newUnit)
-    await updateProfile.mutateAsync({ preferred_unit: newUnit })
-    toast.success(`Unit set to ${newUnit}`)
+    try {
+      await updateProfile.mutateAsync({ preferred_unit: newUnit })
+      toast.success(`Unit set to ${newUnit}`)
+    } catch {
+      toast.error('Failed to save unit')
+    }
   }
 
   const exportCSV = () => {
@@ -74,8 +89,12 @@ export function SettingsPageClient() {
     URL.revokeObjectURL(url)
   }
 
-  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined
-  const displayName = (user?.user_metadata?.full_name as string) ?? user?.email ?? ''
+  const avatarUrl = typeof user?.user_metadata?.avatar_url === 'string'
+    ? user.user_metadata.avatar_url
+    : undefined
+  const displayName = typeof user?.user_metadata?.full_name === 'string'
+    ? user.user_metadata.full_name
+    : (user?.email ?? '')
   const initials = displayName.slice(0, 2).toUpperCase()
 
   return (

@@ -1,6 +1,8 @@
 'use client'
 
 import type { User } from '@supabase/supabase-js'
+import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { useUIStore } from '@/store/ui'
@@ -13,6 +15,7 @@ interface AppShellProps {
 
 export function AppShell({ children, user }: AppShellProps) {
   const { sidebarOpen, setSidebarOpen } = useUIStore()
+  const pathname = usePathname()
 
   return (
     <div className="flex h-screen bg-bg overflow-hidden">
@@ -31,9 +34,15 @@ export function AppShell({ children, user }: AppShellProps) {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <Header user={user} />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <motion.main
+          key={pathname}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8"
+        >
           {children}
-        </main>
+        </motion.main>
       </div>
     </div>
   )

@@ -7,15 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useDeleteEntry } from '@/hooks/useEntries'
 import { useUnits } from '@/store/units'
 import { displayWeight, formatDate } from '@/lib/utils'
-
-interface Entry {
-  id: string
-  weight_kg: number
-  logged_at: string
-  note?: string | null
-  body_fat_pct?: number | null
-  waist_cm?: number | null
-}
+import type { Entry } from '@/types/app'
 
 interface EntryTableProps {
   entries: Entry[]
@@ -94,6 +86,7 @@ export function EntryTable({ entries, onEdit }: EntryTableProps) {
                       size="icon"
                       onClick={() => onEdit(entry)}
                       aria-label="Edit entry"
+                      className="min-h-[44px] min-w-[44px]"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
@@ -102,7 +95,7 @@ export function EntryTable({ entries, onEdit }: EntryTableProps) {
                       size="icon"
                       onClick={() => handleDeleteClick(entry.id)}
                       aria-label="Delete entry"
-                      className="text-destructive hover:text-destructive"
+                      className="text-destructive hover:text-destructive min-h-[44px] min-w-[44px]"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

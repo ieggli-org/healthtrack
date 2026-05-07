@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { LayoutDashboard, ClipboardList, Target, Settings } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { motion } from 'framer-motion'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -16,7 +17,12 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <nav className="flex flex-col h-full pt-6 px-3">
+    <motion.nav
+      initial={{ x: -20, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className="flex flex-col h-full pt-6 px-3"
+    >
       {/* Logo */}
       <div className="px-3 mb-8">
         <span className="font-serif text-xl text-heading font-light">HealthTrack</span>
@@ -44,6 +50,6 @@ export function Sidebar() {
           )
         })}
       </ul>
-    </nav>
+    </motion.nav>
   )
 }

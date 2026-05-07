@@ -3,10 +3,14 @@
 import { useState } from 'react'
 import { subDays, subMonths, subYears, format } from 'date-fns'
 import { useStats } from '@/hooks/useStats'
+import { useGoal } from '@/hooks/useGoals'
+import { useUnits } from '@/store/units'
+import { displayWeight } from '@/lib/utils'
 import { WeightChart } from '@/components/charts/WeightChart'
 import { WeeklyBarChart } from '@/components/charts/WeeklyBarChart'
 import { ConsistencyHeatmap } from '@/components/charts/ConsistencyHeatmap'
 import { StatCards } from './StatCards'
+import { EmptyDashboard } from './EmptyDashboard'
 
 const PRESETS = [
   {
@@ -60,10 +64,21 @@ export function DashboardPageClient() {
   const [dateRange, setDateRange] = useState(PRESETS[2].getDates())
 
   const { data: stats, isLoading } = useStats(dateRange.from, dateRange.to)
+  const { data: goalData, isLoading: goalsIsLoading } = useGoal()
+  const { unit } = useUnits()
+
+  const goalWeightKg = (goalData?.goal as { goal_weight_kg?: number } | null)?.goal_weight_kg
+  const goalWeight = goalWeightKg !== undefined ? displayWeight(goalWeightKg, unit) : undefined
 
   const selectPreset = (preset: (typeof PRESETS)[number]) => {
     setActivePreset(preset.label)
     setDateRange(preset.getDates())
+  }
+
+  const hasGoal = !!(goalData?.goal)
+
+  if (!isLoading && !goalsIsLoading && (!stats || (stats.series as unknown[]).length === 0)) {
+    return <EmptyDashboard hasGoal={hasGoal} />
   }
 
   return (
@@ -96,7 +111,7 @@ export function DashboardPageClient() {
             Loading…
           </div>
         ) : stats ? (
-          <WeightChart stats={stats} />
+          <WeightChart stats={stats} goalWeight={goalWeight} />
         ) : null}
       </div>
 

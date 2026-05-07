@@ -34,7 +34,6 @@ interface GoalFormProps {
   initialStartWeight?: number  // kg
   initialGoalWeight?: number   // kg
   initialTargetDate?: string
-  goalId?: string
   onSubmit: (data: { start_weight_kg: number; goal_weight_kg: number; target_date?: string }) => Promise<void>
   isSubmitting?: boolean
 }
@@ -70,7 +69,7 @@ export function GoalForm({ initialStartWeight, initialGoalWeight, initialTargetD
         <div className="space-y-1.5">
           <Label htmlFor="startWeight" className="text-body text-sm">Starting weight ({unit})</Label>
           <Input id="startWeight" type="number" step="0.1" {...register('startWeight')} className="bg-surface-2 border-border text-heading" />
-          {errors.startWeight && <p className="text-xs text-warning">{errors.startWeight.message as string}</p>}
+          {errors.startWeight && <p className="text-xs text-warning">{errors.startWeight.message ?? 'Invalid value'}</p>}
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="goalWeight" className="text-body text-sm">Goal weight ({unit})</Label>

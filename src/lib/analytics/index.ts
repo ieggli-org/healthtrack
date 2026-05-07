@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format, differenceInDays, parseISO } from 'date-fns'
 import { movingAverage, type DataPoint } from './moving-averages'
 import { computeProjection } from './projection'
 import { detectPlateau } from './plateau'
@@ -35,10 +35,12 @@ function computeBMI(weightKg: number, heightCm: number) {
 
 function computeRateOfChange(ma7: { date: string; value: number }[]) {
   if (ma7.length < 2) return { perDay: 0, perWeek: 0, perMonth: 0 }
-  const first = ma7[0].value
-  const last = ma7[ma7.length - 1].value
-  const days = ma7.length
-  const perDay = (last - first) / days
+  const firstDate = parseISO(ma7[0].date)
+  const lastDate = parseISO(ma7[ma7.length - 1].date)
+  const days = differenceInDays(lastDate, firstDate)
+  if (days === 0) return { perDay: 0, perWeek: 0, perMonth: 0 }
+  const totalChange = ma7[ma7.length - 1].value - ma7[0].value
+  const perDay = totalChange / days
   return {
     perDay: Math.round(perDay * 1000) / 1000,
     perWeek: Math.round(perDay * 7 * 1000) / 1000,
@@ -56,7 +58,7 @@ function computeWeeklyDigest(
 
   const percentOfGoal = goal && goal.start_weight_kg !== goal.goal_weight_kg
     ? Math.round(
-        ((series[0]?.weight_kg ?? goal.start_weight_kg) - (series[series.length - 1]?.weight_kg ?? goal.start_weight_kg))
+        (goal.start_weight_kg - (series[series.length - 1]?.weight_kg ?? goal.start_weight_kg))
         / (goal.start_weight_kg - goal.goal_weight_kg) * 100
       )
     : null
