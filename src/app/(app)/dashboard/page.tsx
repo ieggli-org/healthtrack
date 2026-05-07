@@ -1,3 +1,5 @@
+import { DashboardPageClient } from '@/components/dashboard/DashboardPageClient'
+
 export default function DashboardPage() {
-  return <div className="text-body">Dashboard — coming soon</div>
+  return <DashboardPageClient />
 }
