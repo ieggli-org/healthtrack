@@ -35,3 +35,33 @@ tasks/          # Implementation task tracking (T01-T30)
 ## Tasks
 
 See `/tasks/_index.md` for the full implementation plan across 30 tasks.
+
+## Deployment
+
+### Vercel Setup
+
+1. Import the repository on [vercel.com](https://vercel.com) → New Project → Import Git Repository.
+2. Framework preset: **Next.js** (auto-detected).
+3. Set environment variables in Project Settings → Environment Variables:
+
+| Variable | Environment | Notes |
+|----------|-------------|-------|
+| `NEXT_PUBLIC_SUPABASE_URL` | All | Your Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | All | Supabase anon key (safe to expose) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Production + Preview | **Never expose to client** |
+| `APP_URL` | Production | `https://your-domain.vercel.app` |
+| `NEXT_PUBLIC_APP_URL` | Production | `https://your-domain.vercel.app` |
+
+### Supabase Auth for Preview Deploys
+
+In Supabase dashboard → Authentication → URL Configuration:
+- **Site URL:** `https://your-domain.vercel.app`
+- **Redirect URLs:** Add `https://*.vercel.app/auth/callback`
+
+### Google OAuth redirect URI
+
+In Google Cloud Console → OAuth 2.0 Client → Authorized redirect URIs:
+```
+https://<project-ref>.supabase.co/auth/v1/callback
+```
+Note: This goes to Supabase, NOT your Vercel domain.
